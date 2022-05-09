@@ -70,20 +70,40 @@ zero-api 会有一定规则来省略分号：
 为了反应出惯用的使用习惯，本文档中的代码示例将参照这些规则来省略掉分号。
 
 ## 标识符(Identifiers)
-标识符用于命名程序中的实体——比如变量和类型。它是一个或者多个字母和数字的序列组合。标识符的第一个字符必须是一个字母。
+标识符用于命名程序中的实体，或者部分字符值变量。它可以使用任意非空字符串组合起来。
+
+如果标识符第一个字符是字母，并且其中不包含特殊字符，可以将其使用在变量和类型命名中。
 
 ```EBNT
-identifier = letter { letter | unicode_digit } .
+identifier = unicode_char { unicode_char } . 
 ```
 
 ```EBNT_DEMO
-a
+a // can use as ident
 _x9
 ThisVariableIsExported
 αβ
+
+3s
+/path/:user
 ```
 
-有一些标识符已经被 预先声明 了。
+注意： 因为 ':' 是一个特特殊标点，同时我们有一个 "/path/:user" 需要解析成一个完整的标识符。
+所以一个单独的 **:** 会解析成一个标点，如果跟在 **/:** 会解析成一个标识符。  
+
+**/api/user/:info** 应该解析成 "/api/user/:info"
+
+**jwt: auth**  应该解析成 "jwt" ":" "auth"
+
+## 运算符与标点(Operators and punctuation)
+如下的字符用于表示标点：
+```EBNT
+( )
+[ ]
+{ }
+, ;
+: =
+```
 
 ## 字符串字面值(String literals)
 字符串字面值代表了通过串联字符序列而获得的字符串 常量 。它有两种形式： 原始 raw 字符串字面值和 解释型 interpreted 字符串字面值。
@@ -108,32 +128,13 @@ interpreted_string_lit = `"` { unicode_value | byte_value } `"` .
 "\U00110000"         // 非法: 无效的 Unicode 码位
 ```
 
-## zero-api 特殊字符定义
-zero-api 支持一批特殊字符变量，可以以特殊字符开头，数字等开头。
-```EBNT
-value_string_lit = unicode_char { unicode_char } .
-```
-
-```EBNT_DEMO
-3s
-abc
-/api/user/:info
-```
-
-TODO:
-针对
-/api/user/:info(req)
-
-这种需要解析成 **/api/user/:info**，**(**，**)** 和 **req** 这样的token。
-
 ## 预声明的标识符
-以下是 zero-api 支持的预声明的标识符
+以下是 zero-api 支持的预声明的标识符，目前 zero-api 仅仅支持预声明和自定义的标识符。
 
 ```EBNT
 Types:
 bool float32 float64 int int8 int16 int32 int64
 string uint uint8 uint16 uint32 uint64
-
 ```
 
 ```EBNT_DEMO
@@ -290,12 +291,12 @@ MapType = "map" "[" Type "]" Type .
 ```EBNT
 ServiceDecl = (ServiceExtDecl) ServiceBody .
 
-ServiceBody = "service" value_string_lit "{" { RouteDecl } "}" .
+ServiceBody = "service" identifier "{" { RouteDecl } "}" .
 RouteDecl = (Doc) ";" Handler ";" Method Path (Request) (Response) .
 Doc = "@doc" string_lit .
 Handler = "@handler" identifier .
 Method = "get" | "post" | "put" | "head"  | "otions" | "delete" | "patch" .
-Path   = value_string_lit .
+Path   = identifier .
 Request = "(" identifier ")" .
 Response = "returns" "(" identifier ")" .
 ```
@@ -314,7 +315,7 @@ TODO: Response 括号
 服务 @server 扩展信息定义。
 ```EBNT
 ServiceExtDecl = "@server" "(" { ServiceExtElement } ")" .
-ServiceExtElement = identifier ":" (value_string_lit | string_lit | identifier) .
+ServiceExtElement = identifier ":" (string_lit | identifier) .
 ```
 
 ```EBNT_DEMO

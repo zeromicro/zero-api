@@ -3,6 +3,7 @@ package token
 import (
 	"go/token"
 	"strconv"
+	"unicode"
 )
 
 // Token is the set of lexical tokens of the zero-api programming language.
@@ -20,15 +21,14 @@ const (
 	IDENT
 
 	STRING
-	VALUE_STRING
 	literal_end
 
 	operator_beg
+	ASSIGN // =
 	LPAREN // (
 	LBRACK // [
 	LBRACE // {
 	COMMA  // ,
-	PERIOD // .
 
 	RPAREN    // )
 	RBRACK    // ]
@@ -47,17 +47,17 @@ const (
 var tokens = [...]string{
 	ILLEGAL: "ILLEGAL",
 
-	EOF:          "EOF",
-	COMMENT:      "COMMENT",
-	IDENT:        "IDENT",
-	STRING:       "STRING",
-	VALUE_STRING: "VALUE_STRING",
+	EOF:     "EOF",
+	COMMENT: "COMMENT",
+	IDENT:   "IDENT",
+	STRING:  "STRING",
 
+	ASSIGN: "=",
 	LPAREN: "(",
 	LBRACK: "[",
 	LBRACE: "{",
 	COMMA:  ",",
-	PERIOD: ".",
+	//PERIOD: ".",
 
 	RPAREN:    ")",
 	RBRACK:    "]",
@@ -97,4 +97,17 @@ func (tok Token) IsLiteral() bool { return literal_beg < tok && tok < literal_en
 //
 func (tok Token) IsOperator() bool {
 	return (operator_beg < tok && tok < operator_end) || tok == TILDE
+}
+
+// IsIdentifier reports whether name is a Go identifier, that is, a non-empty
+// string made up of letters, digits, and underscores, where the first character
+// is not a digit. Keywords are not identifiers.
+//
+func IsIdentifier(name string) bool {
+	for i, c := range name {
+		if !unicode.IsLetter(c) && c != '_' && (i == 0 || !unicode.IsDigit(c)) {
+			return false
+		}
+	}
+	return name != ""
 }
