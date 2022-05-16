@@ -178,9 +178,9 @@ scanAgain:
 			tok = token.COMMENT
 			lit = comment
 		default:
+			insertSemi = true
 			lit = s.scanIdentifier(true, offs)
 			tok = token.IDENT
-			insertSemi = s.insertSemi
 		}
 	case '\n':
 		s.insertSemi = false
@@ -219,10 +219,12 @@ scanAgain:
 		tok = token.RBRACE
 	case '~':
 		tok = token.TILDE
+	case '*':
+		tok = token.MUL
 	default:
+		insertSemi = true
 		lit = s.scanIdentifier(false, offs)
 		tok = token.IDENT
-		insertSemi = s.insertSemi
 	}
 
 	if s.mode&dontInsertSemis == 0 {

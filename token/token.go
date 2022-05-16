@@ -6,6 +6,8 @@ import (
 	"unicode"
 )
 
+const NoPos Pos = 0
+
 // Token is the set of lexical tokens of the zero-api programming language.
 type Token token.Token
 
@@ -24,6 +26,8 @@ const (
 	literal_end
 
 	operator_beg
+	MUL // *
+
 	ASSIGN // =
 	LPAREN // (
 	LBRACK // [

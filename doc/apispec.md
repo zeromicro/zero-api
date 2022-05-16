@@ -169,8 +169,8 @@ syntax = "v1"
 导出声明用于 当前 API 文件导入其他 API 的时候使用。
 
 ```EBNT
-ImportDecl       = "import" ( ImportPath | "(" { ImportPath ";" } ")" ) .
-ImportPath       = string_lit .
+ImportDecl       = "import" ( ImportSpec | "(" { ImportSpec ";" } ")" ) .
+ImportSpec       = string_lit .
 ```
 ## 信息声明(Info declaration)
 信息声明用于声明 API 的一些额外信息。

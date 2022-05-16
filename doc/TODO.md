@@ -54,4 +54,7 @@ post /foo(req)
 
 ```
 这种不会支持，建议直接定义不同的 handler 自行处理
+
+# 6. type 定义 group
+refer： https://github.com/zeromicro/go-zero/issues/1854
  

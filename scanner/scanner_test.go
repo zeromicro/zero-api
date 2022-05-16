@@ -684,16 +684,12 @@ func BenchmarkScan(b *testing.B) {
 func BenchmarkScanFiles(b *testing.B) {
 	// Scan a few arbitrary large files, and one small one, to provide some
 	// variety in benchmarks.
-	// TODO: change *.go to *.api
 	for _, p := range []string{
-		"go/types/expr.go",
-		"go/parser/parser.go",
-		"net/http/server.go",
-		"go/scanner/errors.go",
+		"testdata/demo.api",
 	} {
 		b.Run(p, func(b *testing.B) {
 			b.StopTimer()
-			filename := filepath.Join("..", "..", filepath.FromSlash(p))
+			filename := filepath.Join("..", filepath.FromSlash(p))
 			src, err := os.ReadFile(filename)
 			if err != nil {
 				b.Fatal(err)

@@ -28,7 +28,7 @@ func ExampleScanner_Scan() {
 
 	// output:
 	// 1:1	IDENT	"post"
-	// 1:6	IDENT	" /foo"
+	// 1:6	IDENT	"/foo"
 	// 1:11	(	""
 	// 1:12	IDENT	"Foo"
 	// 1:15	)	""
