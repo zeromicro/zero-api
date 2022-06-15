@@ -184,14 +184,14 @@ func (p *parser) parseFile() *ast.File {
 		// TODO: default syntax
 	}
 
-	var imports []*ast.GenDecl
 	var info *ast.InfoDecl
-	for p.tok == token.IDENT && (ast.IMPORT.Is(p.lit) || ast.INFO.Is(p.lit)) {
-		if ast.INFO.Is(p.lit) {
-			info = p.parseInfoDecl()
-		} else if ast.IMPORT.Is(p.lit) {
-			imports = append(imports, p.parseGenDecl(ast.IMPORT, p.parseImportSpec)) // parse import
-		}
+	if p.tok == token.IDENT && ast.INFO.Is(p.lit) {
+		info = p.parseInfoDecl()
+	}
+
+	var imports []*ast.GenDecl
+	for p.tok == token.IDENT && ast.IMPORT.Is(p.lit) {
+		imports = append(imports, p.parseGenDecl(ast.IMPORT, p.parseImportSpec)) // parse import
 	}
 
 	// type or service
@@ -206,6 +206,7 @@ func (p *parser) parseFile() *ast.File {
 		ImportDecls: imports,
 		InfoDecl:    info,
 		Decls:       decls,
+		Comments:    p.comments,
 	}
 
 	// TODO: resolveFile

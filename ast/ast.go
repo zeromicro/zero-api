@@ -293,6 +293,10 @@ func (x *BadDecl) Pos() token.Pos { return x.From }
 func (x *BadDecl) End() token.Pos { return x.To }
 func (x *BadDecl) declNode()      {}
 
+func (x *SyntaxDecl) Pos() token.Pos { return x.TokPos }
+func (x *SyntaxDecl) End() token.Pos { return x.SyntaxName.End() }
+func (x *SyntaxDecl) declNode()      {}
+
 func (x *GenDecl) Pos() token.Pos { return x.TokPos }
 func (x *GenDecl) End() token.Pos {
 	if x.Rparen.IsValid() {
@@ -301,6 +305,9 @@ func (x *GenDecl) End() token.Pos {
 	return x.Specs[0].End()
 }
 func (x *GenDecl) declNode() {}
+
+func (x *InfoDecl) Pos() token.Pos { return x.TokPos }
+func (x *InfoDecl) End() token.Pos { return x.Rparen + 1 }
 
 // ----------------------------------------------------------------------------
 // service
@@ -360,6 +367,9 @@ func (x *ServiceExtDecl) token() token.Pos { return x.Rparen }
 func (x *ServiceApiDecl) Pos() token.Pos { return x.TokPos }
 func (x *ServiceApiDecl) End() token.Pos { return x.Rbrace }
 
+func (x *Route) Pos() token.Pos { return x.Method.Pos() }
+func (x *Route) End() token.Pos { return x.EndPos }
+
 // ----------------------------------------------------------------------------
 // File
 
@@ -369,7 +379,22 @@ type File struct {
 	SyntaxDecl  *SyntaxDecl
 	ImportDecls []*GenDecl
 	InfoDecl    *InfoDecl
-	Decls       []Decl // top-level declarations; or nil; types or service
+	Decls       []Decl // top-level declarations; or nil; types(GenDecl) or service(ServiceDecl)
+
+	Comments []*ast.CommentGroup
+}
+
+func (x *File) Pos() token.Pos {
+	if x.SyntaxDecl != nil {
+		return x.SyntaxDecl.Pos()
+	}
+	return 0
+}
+func (x *File) End() token.Pos {
+	if n := len(x.Decls); n > 0 {
+		return x.Decls[n-1].End()
+	}
+	return token.NoPos
 }
 
 // ----------------------------------------------------------------------------

@@ -255,7 +255,7 @@ func (p *parser) parseFieldDecl() *ast.Field {
 		if p.tok == token.STRING || p.tok == token.SEMICOLON || p.tok == token.RBRACE {
 			typ = name
 		} else {
-			names := []*ast.Ident{name}
+			names = []*ast.Ident{name}
 			for p.tok == token.COMMA {
 				p.next()
 				names = append(names, p.parseIdent(true))
