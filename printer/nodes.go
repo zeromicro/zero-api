@@ -245,8 +245,8 @@ func (p *printer) serviceExtDecl(node *ast.ServiceExtDecl) {
 	p.print(indent, formfeed)
 	for _, each := range node.Kvs {
 		//p.print(each.Pos())
-		p.expr(each)
 		p.print(newline)
+		p.expr(each)
 	}
 	p.print(unindent, formfeed, token.RPAREN)
 }
