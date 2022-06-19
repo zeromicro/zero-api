@@ -1,0 +1,43 @@
+/*
+ * Copyright (c) 2021 The Go-zero Authors (go-zero.dev). All rights reserved.
+ */
+
+// api语法版本
+syntax = "v1"
+
+info(
+	author: "dylan"
+	date: "2022-01-28"
+	desc: "api 语法 demo"
+)
+
+import "a/b.api"
+
+import(
+	"c.api"
+	"d/d.api"
+)
+
+type (
+	User { // User for 注释
+		Name string
+	}
+)
+
+type Foo {
+    ID int64 `json:"id"`
+}
+
+@server(
+	auth: dylan
+	timeout: 3s
+)
+service foo-api {
+  @doc ping-doc
+  @handler ping
+  get /ping
+
+  @doc "foo"
+  @handler bar
+  post /bar/:id (Foo) returns (User)
+}
